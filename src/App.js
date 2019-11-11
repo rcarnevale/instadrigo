@@ -9,7 +9,7 @@ import Timeline from './componentes/Timeline';
 function App() {
   return (
     <div id="root">
-      <div data-reactroot="" className="main">
+      <div className="main">
 
         <Header/>
         <Timeline login={this.props.params.login} />

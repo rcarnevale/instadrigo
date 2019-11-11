@@ -1,96 +1,96 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-export default class FotoItem extends React.Component{
-    render(){
-        return(
-            <div className="foto">
-                
-                <FotoHeader  imagem={this.props.imagem} />
+class FotoAtualizacoes extends React.Component {
 
-                <img alt="foto" className="foto-src" src={this.props.imagem.urlFoto}/>
-
-                <FotoInfo imagem={this.props.imagem}/>
-
-                <FotoAtualizacoes />
-
-                </div> /*fim .foto*/
-        )
+    like(event){
+      event.preventDefault();      
+      this.props.like(this.props.foto.id);
     }
-}
 
-class FotoHeader extends React.Component {
+    comenta(event){
+      event.preventDefault();
+      this.props.comenta(this.props.foto.id,this.comentario.value);
+    }
+
     render(){
-        return(
-            <header className="foto-header">
-                <figure className="foto-usuario">
-                <img src={this.props.imagem.urlPerfil} alt="foto do usuario"/>
-                <figcaption className="foto-usuario">
-                    <Link to={`/timeline/${this.props.imagem.loginUsuario}`}>
-                    {this.props.imagem.loginUsuario}
-                    </Link>  
-                </figcaption>
-                </figure>
-                <time className="foto-data">{this.props.imagem.horario}</time>
-            </header>
-        )
+        return (
+            <section className="fotoAtualizacoes">
+              <a onClick={this.like.bind(this)} className={this.props.foto.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
+              <form className="fotoAtualizacoes-form" onSubmit={this.comenta.bind(this)}>
+                <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo" ref={input => this.comentario = input}/>
+                <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit"/>
+              </form>
+
+            </section>            
+        );
     }
 }
 
 class FotoInfo extends React.Component {
     render(){
-        return(
-            <div className="foto-info">
-                    <div className="foto-info-likes">
-                        {
-                            this.props.imagem.likers.map(liker => {
-                                return(
-                                    <Link to={`/timeline/${liker.login}`}>
-                                    {liker.login},
-                                </Link>
-                                )
-                            })
-                        }
-                  
-                    curtiram
-                
-                    </div>
+        return (
+            <div className="foto-in fo">
+              <div className="foto-info-likes">
+                {
+                  this.props.foto.likers.map(liker => {
+                    return (<Link key={liker.login} href={`/timeline/${liker.login}`}>{liker.login},</Link>)
+                  })
+                }
+                 
+                 curtiram
+             
+              </div>
 
-                    <p className="foto-info-legenda">
-                    <a className="foto-info-autor">autor </a>
-                        {this.props.imagem.comentario}
-                    </p>
+              <p className="foto-info-legenda">
+                <a className="foto-info-autor">autor </a>
+                {this.props.foto.comentario}
+              </p>
 
-                    <ul className="foto-info-comentarios">
-                    {
-                        this.props.imagem.comentarios.map(comentario => {
-                            return (
-                                <li className="comentario">
-                                    <Link to={`timeline/${comentario.login}`}className="foto-info-autor">{comentario.login} </Link>
-                                    {comentario.texto}
-                                </li>
-                            )
-                        })
-                    }
-                    
-                    </ul>
-                </div>
-        )
+              <ul className="foto-info-comentarios">
+                {
+                  this.props.foto.comentarios.map(comentario => {
+                    return (
+                      <li className="comentario" key={comentario.id}>
+                        <Link to={`/timeline/${comentario.login}`} className="foto-info-autor">{comentario.login} </Link>
+                        {comentario.texto}
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+            </div>            
+        );
     }
 }
 
-class FotoAtualizacoes extends React.Component {
+class FotoHeader extends React.Component {
     render(){
-        return(
-            <section className="fotoAtualizacoes">
-                    <a href="#" className="fotoAtualizacoes-like">Likar</a>
-                    <form className="fotoAtualizacoes-form">
-                    <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo"/>
-                    <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit"/>
-                    </form>
+        return (
+            <header className="foto-header">
+              <figure className="foto-usuario">
+                <img src={this.props.foto.urlPerfil} alt="foto do usuario"/>
+                <figcaption className="foto-usuario">
+                  <Link to={`/timeline/${this.props.foto.loginUsuario}`}>
+                    {this.props.foto.loginUsuario}
+                  </Link>  
+                </figcaption>
+              </figure>
+              <time className="foto-data">{this.props.foto.horario}</time>
+            </header>            
+        );
+    }
+}
 
-                </section>
-
-        )
+export default class FotoItem extends React.Component {
+    render(){
+        return (
+          <div className="foto">
+            <FotoHeader foto={this.props.foto}/>
+            <img alt="foto" className="foto-src" src={this.props.foto.urlFoto}/>
+            <FotoInfo foto={this.props.foto}/>
+            <FotoAtualizacoes {...this.props}/>
+          </div>            
+        );
     }
 }
